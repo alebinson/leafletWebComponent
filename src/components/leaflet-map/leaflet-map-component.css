@@ -1,0 +1,21 @@
+
+#l-map {
+  height: 100%;
+}
+
+img.leaflet-marker-icon {
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+a.leaflet-control-layers-toggle {
+  background-image: url(/assets/images/layers.png) !important;
+}
+
+.leaflet-retina a.leaflet-control-layers-toggle {
+  background-image: url(/assets/images/layers-2x.png) !important;
+}
+
+.alex{width: 400px;}
+
+@import '../../../node_modules/leaflet/dist/leaflet.css';
+@import './extensions/leaflet-draw/leaflet.draw.css';

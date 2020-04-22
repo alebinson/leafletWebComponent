@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Stencil Component Starter</title>
+
+  <script type="module" src="/build/leafletwc.esm.js"></script>
+  <script nomodule src="/build/leafletwc.js"></script>
+
+  </head>
+<body>
+
+  <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>
+
+  <div  style="width: 100%;height: 600px;"> 
+    <l-map 
+      tile-layer-url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+      icon-url="https://zoranlj.000webhostapp.com/modities-map/Modus-Mark-White.png" 
+      locations="[[51.505, -0.04]]" 
+      currentlocation="[0,0]" 
+      currentlocationiconurl="https://zoranlj.000webhostapp.com/modities-map/Modus-Mark-Black.png" 
+      center="[51.505, -0.04]" 
+      zoom="8" 
+      min-zoom="2" 
+      max-zoom="16" 
+      class="hydrated">
+    </l-map>
+  </div>
+
+</body>
+
+<script src="../node_modules/esri-leaflet/dist/esri-leaflet"></script>
+</html>
