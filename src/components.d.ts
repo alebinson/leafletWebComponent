@@ -11,7 +11,7 @@ export namespace Components {
         "currentLocation": string;
         "currentLocationIconUrl": string;
         "iconUrl": string;
-        "locations": string;
+        "locations": Array<[number, number]>;
         "maxZoom": string;
         "minZoom": string;
         "tileLayerUrl": string;
@@ -56,7 +56,7 @@ declare namespace LocalJSX {
         "currentLocation"?: string;
         "currentLocationIconUrl"?: string;
         "iconUrl"?: string;
-        "locations"?: string;
+        "locations"?: Array<[number, number]>;
         "maxZoom"?: string;
         "minZoom"?: string;
         "onMessage"?: (event: CustomEvent<any>) => void;

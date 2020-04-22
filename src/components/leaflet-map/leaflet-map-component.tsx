@@ -35,9 +35,9 @@ export class LMap {
   @Prop() maxZoom: string;
   @Prop() currentLocation: string;
   @Prop() currentLocationIconUrl: string;
-  @Prop() locations: string;
+  @Prop() locations: Array<[number, number]>;
   @Watch('locations')
-  handleLocationsChanged(locations: string) {
+  handleLocationsChanged(locations: Array<[number, number]>) {
     console.log('l-map handleLocationsChanged');
     this.addMarkers(locations);
   }
