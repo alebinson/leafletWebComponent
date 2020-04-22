@@ -1444,11 +1444,28 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		TYPE: 'marker'
 	},
 
+	/////Defaut icon do not take in consideration where images placed
+	// options: {
+	// 	icon: new L.Icon.Default(),
+	// 	repeatMode: false,
+	// 	zIndexOffset: 2000 // This should be > than the highest z-index any markers
+	// },
+
 	options: {
-		icon: new L.Icon.Default(),
+		icon: L.icon({
+			iconAnchor: [12, 41],
+			iconRetinaUrl: "assets/images/marker-icon-2x.png",
+			iconSize: [25, 41],
+			iconUrl: "assets/images/marker-icon.png",
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41],
+			shadowUrl: "assets/images/marker-shadow.png",
+			tooltipAnchor: [16, -28],
+		  }),
 		repeatMode: false,
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
+	
 
 	// @method initialize(): void
 	initialize: function (map, options) {

@@ -190,7 +190,7 @@ export class LMap {
   addMarkers(locations) {
     const customIcon = L.icon({
       iconUrl: this.iconUrl,
-      iconSize: [30, 30]
+      // iconSize: [30, 30]
     });
     locations.map(latLng => {
       L.marker(latLng, { icon: customIcon }).addTo(this.layerGroupLocations);
@@ -200,7 +200,7 @@ export class LMap {
   addCurrentLocationMarker(location) {
     const customIcon = L.icon({
       iconUrl: this.currentLocationIconUrl,
-      iconSize: [30, 30]
+      // iconSize: [30, 30]
     });
     L.marker(location, { icon: customIcon }).addTo(this.layerGroupLocations);
   }
