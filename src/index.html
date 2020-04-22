@@ -15,11 +15,12 @@
 
   <div  style="width: 100%;height: 600px;"> 
     <l-map 
+      id="leafletMap"
       tile-layer-url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
-      icon-url="https://zoranlj.000webhostapp.com/modities-map/Modus-Mark-White.png" 
-      locations="[[51.505, -0.04]]" 
-      currentlocation="[0,0]" 
-      currentlocationiconurl="https://zoranlj.000webhostapp.com/modities-map/Modus-Mark-Black.png" 
+      icon-url1="https://zoranlj.000webhostapp.com/modities-map/Modus-Mark-White.png"
+      icon-url="assets/images/marker-icon.png" 
+      current-location="[0,0]" 
+      current-location-icon-url="https://zoranlj.000webhostapp.com/modities-map/Modus-Mark-Black.png" 
       center="[51.505, -0.04]" 
       zoom="8" 
       min-zoom="2" 
@@ -30,5 +31,17 @@
 
 </body>
 
-<script src="../node_modules/esri-leaflet/dist/esri-leaflet"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var map_wc = document.getElementById('leafletMap');
+    
+    map_wc.locations=[[51.505, -0.04],[51.615, -0.04]];
+    map_wc.addEventListener('message',(ev) => {
+      console.log('HERE',ev.detail);
+    });
+
+    console.log('DOM fully loaded and parsed');
+  });
+</script>
+<!-- <script src="../node_modules/esri-leaflet/dist/esri-leaflet"></script> -->
 </html>

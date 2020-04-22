@@ -39,7 +39,7 @@ export class LMap {
   @Watch('locations')
   handleLocationsChanged(locations: string) {
     console.log('l-map handleLocationsChanged');
-    this.addMarkers(JSON.parse(locations));
+    this.addMarkers(locations);
   }
   @Event() message: EventEmitter;
 
@@ -79,7 +79,7 @@ export class LMap {
     },2000);
 
     if (this.locations && this.locations.length) {
-      this.addMarkers(JSON.parse(this.locations));
+      this.addMarkers(this.locations);
     }
 
     if (this.currentLocation && this.currentLocation.length) {
