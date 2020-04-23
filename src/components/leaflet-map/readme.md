@@ -7,17 +7,17 @@
 
 ## Properties
 
-| Property                 | Attribute                   | Description | Type     | Default     |
-| ------------------------ | --------------------------- | ----------- | -------- | ----------- |
-| `center`                 | `center`                    |             | `string` | `undefined` |
-| `currentLocation`        | `current-location`          |             | `string` | `undefined` |
-| `currentLocationIconUrl` | `current-location-icon-url` |             | `string` | `undefined` |
-| `iconUrl`                | `icon-url`                  |             | `string` | `undefined` |
-| `locations`              | `locations`                 |             | `string` | `undefined` |
-| `maxZoom`                | `max-zoom`                  |             | `string` | `undefined` |
-| `minZoom`                | `min-zoom`                  |             | `string` | `undefined` |
-| `tileLayerUrl`           | `tile-layer-url`            |             | `string` | `undefined` |
-| `zoom`                   | `zoom`                      |             | `string` | `undefined` |
+| Property                 | Attribute                   | Description | Type                 | Default     |
+| ------------------------ | --------------------------- | ----------- | -------------------- | ----------- |
+| `center`                 | `center`                    |             | `string`             | `undefined` |
+| `currentLocation`        | `current-location`          |             | `string`             | `undefined` |
+| `currentLocationIconUrl` | `current-location-icon-url` |             | `string`             | `undefined` |
+| `iconUrl`                | `icon-url`                  |             | `string`             | `undefined` |
+| `locations`              | --                          |             | `[number, number][]` | `undefined` |
+| `maxZoom`                | `max-zoom`                  |             | `string`             | `undefined` |
+| `minZoom`                | `min-zoom`                  |             | `string`             | `undefined` |
+| `tileLayerUrl`           | `tile-layer-url`            |             | `string`             | `undefined` |
+| `zoom`                   | `zoom`                      |             | `string`             | `undefined` |
 
 
 ## Events
