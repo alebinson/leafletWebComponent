@@ -8,6 +8,7 @@
 
 import { Component, Prop, Element, Watch, h, EventEmitter, Event } from '@stencil/core';
 import L from 'leaflet';
+import ResizeObserver from "resize-observer-polyfill";
 
 import { extend } from './extensions/leaflet-draw/leaflet.draw';
 import { extendHeatLayer } from './extensions/leaflet-heatmap-layer/leaflet-heatmap-layer';
@@ -49,17 +50,76 @@ export class LMap {
   layerGroupTiles = L.layerGroup();
   layerGroupLocations = L.layerGroup();
 
-  getBoundingBox = (bounds) => {
+  private ro: ResizeObserver;
+
+  private getBoundingBox = (bounds) => {
     return {
       northWest: {...bounds.getNorthWest()},
       southEast: {...bounds.getSouthEast()}
     };
   }
 
+  private observeMapResizing = (mapElement) => {
+    let rtime;
+    let timeout = false;
+    const delta = 200;
+    const resizeend = () => {
+      const now = (new Date()).getTime();
+      if ( now - rtime < delta) {
+          setTimeout(resizeend, delta);
+      } else {
+          timeout = false;
+          
+          console.log('RESIZE callback invoked');
+          setTimeout(() => {
+            this.LMap.invalidateSize();
+          },200);
+
+      }               
+    }
+
+    this.ro = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        rtime = (new Date()).getTime();
+        if (timeout === false) {
+            timeout = true;
+            setTimeout(resizeend, delta);
+        }
+      }
+    });
+    this.ro.observe(mapElement);
+  }
+
+  private unObserveMapResizing = () => {
+    this.ro.disconnect();
+  }
+
+  private addMarkers(locations) {
+    const customIcon = L.icon({
+      iconUrl: this.iconUrl,
+      // iconSize: [30, 30]
+    });
+    locations.map(latLng => {
+      L.marker(latLng, { icon: customIcon }).addTo(this.layerGroupLocations);
+    });
+  }
+
+  private addCurrentLocationMarker(location) {
+    const customIcon = L.icon({
+      iconUrl: this.currentLocationIconUrl,
+      // iconSize: [30, 30]
+    });
+    L.marker(location, { icon: customIcon }).addTo(this.layerGroupLocations);
+  }
+
   render() {
     return (
       <div id="l-map"></div>
     );
+  }
+
+  componentDidUnload() {
+    this.unObserveMapResizing();
   }
 
   componentDidLoad() {
@@ -83,10 +143,8 @@ export class LMap {
     const esriImagery = L.esri.basemapLayer('Imagery');
     const esriNationalGeographic = L.esri.basemapLayer('NationalGeographic').addTo(this.layerGroupTiles);
 
-    setTimeout(() => {
-      this.LMap.invalidateSize();
-    },2000);
-
+    this.observeMapResizing(LMapElement);
+    
     if (this.locations && this.locations.length) {
       this.addMarkers(this.locations);
     }
@@ -296,22 +354,6 @@ export class LMap {
 
   }
 
-  addMarkers(locations) {
-    const customIcon = L.icon({
-      iconUrl: this.iconUrl,
-      // iconSize: [30, 30]
-    });
-    locations.map(latLng => {
-      L.marker(latLng, { icon: customIcon }).addTo(this.layerGroupLocations);
-    });
-  }
-
-  addCurrentLocationMarker(location) {
-    const customIcon = L.icon({
-      iconUrl: this.currentLocationIconUrl,
-      // iconSize: [30, 30]
-    });
-    L.marker(location, { icon: customIcon }).addTo(this.layerGroupLocations);
-  }
+  
 
 }

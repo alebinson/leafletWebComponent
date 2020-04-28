@@ -28,6 +28,7 @@
   "dependencies": {
     "esri-leaflet": "^2.3.3",
     "leaflet": "^1.6.0",
-    "leaflet-draw": "^1.0.4"
+    "leaflet-draw": "^1.0.4",
+    "resize-observer-polyfill": "^1.5.1"
   }
 }
