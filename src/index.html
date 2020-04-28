@@ -34,11 +34,35 @@
 <script>
   window.addEventListener('DOMContentLoaded', (event) => {
     var map_wc = document.getElementById('leafletMap');
-    
+
     map_wc.locations=[[51.505, -0.04],[51.615, -0.04]];
     map_wc.addEventListener('message',(ev) => {
       console.log('EVENT FROM LEAFLET-WEBCOMPONENT',ev.detail);
     });
+
+    // // ******** Observe on changes when one(className) DOM property is changed
+    // function callback(mutationList, props) {
+    //   mutationList.forEach(function(mutation) {
+    //     switch(mutation.type) {
+    //       case "attributes":
+    //         console.log("Attribute name " + mutation.attributeName +
+    //             " changed to " + mutation.target[mutation.attributeName] +
+    //             " (was " + mutation.oldValue + ")");
+             
+    //         props.forEach(function(prop) {
+    //           console.log(prop + ' is:', mutation.target[prop]);
+    //         });
+    //         break;
+    //     }
+    //   });
+    // }
+
+    // const observer = new MutationObserver((mutationList)=>callback(mutationList,['center','zoom']));
+
+    // observer.observe(map_wc, {
+    //   attributes: true,
+    //   attributeOldValue: true
+    // });
 
     console.log('DOM fully loaded and parsed');
   });

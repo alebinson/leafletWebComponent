@@ -31,8 +31,8 @@ export class LMap {
   @Element() LMapHTMLElement: HTMLElement;
   @Prop() iconUrl: string;
   @Prop() tileLayerUrl: string;
-  @Prop() center: string;
-  @Prop() zoom: string;
+  @Prop({ mutable: true }) center: string;
+  @Prop({ mutable: true }) zoom: string;
   @Prop() minZoom: string;
   @Prop() maxZoom: string;
   @Prop() currentLocation: string;
@@ -48,6 +48,13 @@ export class LMap {
   LMap;
   layerGroupTiles = L.layerGroup();
   layerGroupLocations = L.layerGroup();
+
+  getBoundingBox = (bounds) => {
+    return {
+      northWest: {...bounds.getNorthWest()},
+      southEast: {...bounds.getSouthEast()}
+    };
+  }
 
   render() {
     return (
@@ -88,6 +95,7 @@ export class LMap {
       this.addCurrentLocationMarker(JSON.parse(this.currentLocation));
     }
 
+    // FOR full list of supported layers see here https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services
     let esriFeatureLayerStates = L.esri.featureLayer({
       url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_States_Generalized/FeatureServer/0',
       style: function () {
@@ -95,6 +103,21 @@ export class LMap {
       },
       useCors: false
     });
+
+
+    const handleMapIteraction= (eventType)=>{
+      // this.LMapHTMLElement.className += ' a'; //FOR observation in plain JS 
+      this.center = this.LMap.getCenter();
+      this.zoom = this.LMap.getZoom();
+      this.message.emit({
+        type: eventType,
+        data: {
+          center: {...(this.center as any)},
+          bounds: this.getBoundingBox(this.LMap.getBounds()),
+          zoom: this.zoom,
+        }
+      });
+    }
 
     this.LMap = L.map(LMapElement, {
       // drawControl:true,
@@ -110,9 +133,20 @@ export class LMap {
         console.log('l-map component send location message', e);
         this.message.emit({
           type: 'Map.CLICK',
-          coordinates: {...e.latlng}
+          data: {
+            coordinates: {...e.latlng}
+          }
         });
-      });
+      })
+    .on('moveend',(e:any) => {
+      console.log('l-map component center change', e);
+      handleMapIteraction('Map.PANNED');
+    })
+    .on('zoom',(e:any) => {
+      console.log('l-map component zoom change', e);
+      handleMapIteraction('Map.ZOOMED');
+    });
+
 
     //POLYGON DRAW --START
     const osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
