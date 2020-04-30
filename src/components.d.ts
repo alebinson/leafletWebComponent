@@ -10,10 +10,12 @@ export namespace Components {
         "center": string;
         "currentLocation": string;
         "currentLocationIconUrl": string;
+        "drawers": {};
         "iconUrl": string;
         "locations": Array<[number, number]>;
         "maxZoom": string;
         "minZoom": string;
+        "showDrawControl": boolean;
         "tileLayerUrl": string;
         "zoom": string;
     }
@@ -55,11 +57,13 @@ declare namespace LocalJSX {
         "center"?: string;
         "currentLocation"?: string;
         "currentLocationIconUrl"?: string;
+        "drawers"?: {};
         "iconUrl"?: string;
         "locations"?: Array<[number, number]>;
         "maxZoom"?: string;
         "minZoom"?: string;
         "onMessage"?: (event: CustomEvent<any>) => void;
+        "showDrawControl"?: boolean;
         "tileLayerUrl"?: string;
         "zoom"?: string;
     }

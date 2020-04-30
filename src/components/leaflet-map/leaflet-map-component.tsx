@@ -46,6 +46,9 @@ export class LMap {
   }
   @Event() message: EventEmitter;
 
+  @Prop() showDrawControl: boolean = true;
+  @Prop({ mutable: true }) drawers = {};
+
   LMap;
   layerGroupTiles = L.layerGroup();
   layerGroupLocations = L.layerGroup();
@@ -110,6 +113,82 @@ export class LMap {
       // iconSize: [30, 30]
     });
     L.marker(location, { icon: customIcon }).addTo(this.layerGroupLocations);
+  }
+
+  private initDrawers(){
+    // Define you draw handler somewhere where you click handler can access it. N.B. pass any draw options into the handler
+    this.drawers = {
+      polygonDrawer: new L.Draw.Polygon(this.LMap),
+      polylineDrawer: new L.Draw.Polyline(this.LMap),
+      rectangleDrawer: new L.Draw.Rectangle(this.LMap),
+      circleDrawer: new L.Draw.Circle(this.LMap)
+    }
+
+    // Assumming you have a Leaflet map accessible
+    this.LMap.on('draw:created', (e) => {
+      let type = e.layerType,
+          layer = e.layer;
+
+      // Do whatever you want with the layer.
+      // e.type will be the type of layer that has been draw (polyline, marker, polygon, rectangle, circle)
+      // E.g. add it to the map
+      layer.addTo(this.LMap);
+    });
+  }
+
+  private initDrawLayer(){
+
+    const osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    const osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib });
+    const drawnItems = L.featureGroup().addTo(this.LMap);
+    L.control.layers(
+      {
+        'osm': osm.addTo(this.LMap),
+        "google": L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+            attribution: 'google'
+        })
+      },
+     { 'drawlayer': drawnItems },
+     { position: 'topleft', collapsed: false }).addTo(this.LMap);
+     
+     if(this.showDrawControl){
+       this.LMap.addControl(new L.Control.Draw({
+          edit: {
+              featureGroup: drawnItems,
+              poly: {
+                  allowIntersection: false
+              }
+          },
+          draw: {
+              polygon: {
+                  allowIntersection: false,
+                  showArea: true
+              }
+          }
+      }));
+     }
+
+    this.LMap.on(L.Draw.Event.CREATED, (event) => {
+        const layer = event.layer;
+        drawnItems.addLayer(layer);
+        
+        console.log('Draw.Event.CREATED', layer);
+        if(layer.editing?.latlngs){
+          this.message.emit({
+            type: 'Draw.Event.CREATED',
+            shape: 'polygon',
+            vertexes: [...layer.editing.latlngs[0][0]]
+          });
+        }
+        else{
+          this.message.emit({
+            type: 'Draw.Event.CREATED',
+            shape: 'not polygon',
+          });
+        }
+    });
+
   }
 
   render() {
@@ -205,57 +284,9 @@ export class LMap {
       handleMapIteraction('Map.ZOOMED');
     });
 
-
     //POLYGON DRAW --START
-    const osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    const osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-    const osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib });
-    const drawnItems = L.featureGroup().addTo(this.LMap);
-    L.control.layers(
-      {
-        'osm': osm.addTo(this.LMap),
-        "google": L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
-            attribution: 'google'
-        })
-      },
-     { 'drawlayer': drawnItems },
-     { position: 'topleft', collapsed: false }).addTo(this.LMap);
-     
-     this.LMap.addControl(new L.Control.Draw({
-        edit: {
-            featureGroup: drawnItems,
-            poly: {
-                allowIntersection: false
-            }
-        },
-        draw: {
-            polygon: {
-                allowIntersection: false,
-                showArea: true
-            }
-        }
-    }));
-
-    this.LMap.on(L.Draw.Event.CREATED, (event) => {
-        const layer = event.layer;
-        drawnItems.addLayer(layer);
-        
-        console.log('Draw.Event.CREATED', layer);
-        if(layer.editing?.latlngs){
-          this.message.emit({
-            type: 'Draw.Event.CREATED',
-            shape: 'polygon',
-            vertexes: [...layer.editing.latlngs[0][0]]
-          });
-        }
-        else{
-          this.message.emit({
-            type: 'Draw.Event.CREATED',
-            shape: 'not polygon',
-          });
-        }
-    });
-
+    this.initDrawLayer();
+    this.initDrawers();
     //POLYGON DRAW --END
 
     //HEAT MAP --START

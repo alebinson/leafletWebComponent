@@ -9,10 +9,24 @@
   <script nomodule src="/build/leafletwc.js"></script>
 
   </head>
+  <style>
+    .draw-btn{
+      background-color: rgba(51, 181, 229, 0.4);
+      border-radius: 9px;
+      width: 80px;
+      height: 27px;
+    }
+  </style>
 <body>
 
   <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>
 
+  <hr>
+
+  <button class="draw-btn" id="drawPolyline">Polyline</button>
+  <button class="draw-btn" id="drawPolygon">Polygon</button>
+  <button class="draw-btn" id="drawRectangle">Rectangle</button>
+  <button class="draw-btn" id="drawCircle">Circle</button>
   <div  style="width: 100%;height: 600px;"> 
     <l-map 
       id="leafletMap"
@@ -25,6 +39,7 @@
       zoom="8" 
       min-zoom="2" 
       max-zoom="16" 
+      show-draw-control="false"
       class="hydrated">
     </l-map>
   </div>
@@ -39,6 +54,25 @@
     map_wc.addEventListener('message',(ev) => {
       console.log('EVENT FROM LEAFLET-WEBCOMPONENT',ev.detail);
     });
+
+
+    (() => {
+      var drawActions = {
+        drawPolygon: 'polygonDrawer',
+        drawPolyline: 'polylineDrawer',
+        drawRectangle: 'rectangleDrawer',
+        drawCircle: 'circleDrawer'
+      }
+
+      for (const action in drawActions) {
+        var btn = document.getElementById(action);
+        btn.addEventListener('click',(ev) => {
+          map_wc.drawers[drawActions[action]].enable();
+        });
+
+        // console.log(`${action}: ${drawActions[action]}`);
+      }
+    })();
 
     // // ******** Observe on changes when one(className) DOM property is changed
     // function callback(mutationList, props) {
