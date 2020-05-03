@@ -11,6 +11,8 @@ export namespace Components {
         "currentLocation": string;
         "currentLocationIconUrl": string;
         "drawers": {};
+        "geoJsonData": Array<any>;
+        "heatMapData": Array<[number, number]>;
         "iconUrl": string;
         "locations": Array<[number, number]>;
         "maxZoom": string;
@@ -58,6 +60,8 @@ declare namespace LocalJSX {
         "currentLocation"?: string;
         "currentLocationIconUrl"?: string;
         "drawers"?: {};
+        "geoJsonData"?: Array<any>;
+        "heatMapData"?: Array<[number, number]>;
         "iconUrl"?: string;
         "locations"?: Array<[number, number]>;
         "maxZoom"?: string;
