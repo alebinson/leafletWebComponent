@@ -10,7 +10,7 @@ import { Component, Prop, Element, Watch, h, EventEmitter, Event } from '@stenci
 import L from 'leaflet';
 import ResizeObserver from "resize-observer-polyfill";
 
-import { extend } from './extensions/leaflet-draw/leaflet.draw';
+import { extendDrawLayer } from './extensions/leaflet-draw/leaflet.draw';
 import { extendHeatLayer } from './extensions/leaflet-heatmap-layer/leaflet-heatmap-layer';
 import esri from '../../../node_modules/esri-leaflet/dist/esri-leaflet';
 
@@ -20,7 +20,7 @@ enum RafaelGeoPoint {
   Marker = "marker"
 }
 
-extend(L);
+extendDrawLayer(L);
 extendHeatLayer(L);
 L.esri = esri;
 
@@ -266,46 +266,16 @@ export class LMap {
       });
     }
 
-    this.LMap = L.map(LMapElement, {
-      // drawControl:true,
-      tap: false,
-      zoomControl: true,
-      minZoom: Number(this.minZoom) || 0,
-      maxZoom: Number(this.maxZoom) || 16,
-      maxBounds: [[-90, -180],[90, 180]],
-      layers: [this.layerGroupTiles, this.layerGroupLocations, esriFeatureLayerStates],
-    })
-    .setView(this.center? JSON.parse(this.center) : [0,0], this.zoom ? Number(this.zoom) : 2)
-    .on('click', (e:any) => {
-        console.log('l-map component send location message', e);
-        this.message.emit({
-          type: 'Map.CLICK',
-          data: {
-            coordinates: {...e.latlng}
-          }
-        });
-      })
-    .on('moveend',(e:any) => {
-      console.log('l-map component center change', e);
-      handleMapIteraction('Map.PANNED');
-    })
-    .on('zoom',(e:any) => {
-      console.log('l-map component zoom change', e);
-      handleMapIteraction('Map.ZOOMED');
-    });
-
-    //POLYGON DRAW --START
-    this.initDrawLayer();
-    this.initDrawers();
-    //POLYGON DRAW --END
 
     //HEAT MAP --START
+    let heatMapLayer = null;
     if(this.heatMapData){
-      L.heatLayer(this.heatMapData).addTo(this.LMap);
+      heatMapLayer = L.heatLayer(this.heatMapData);
     }
     //HEAT MAP --END
 
     //GEOJSON --START
+    let geoJsonLayer = null;
     if(this.geoJsonData){
       const onEachFeature = (feature, layer) => {
         var popupContent = "<p>I started out as a GeoJSON " +
@@ -315,10 +285,11 @@ export class LMap {
           popupContent += feature.properties.popupContent;
         }
     
-        layer.bindPopup(popupContent).addTo(this.LMap);
+        //In order to bind popup should have a map instance. If requred should be done after init map 
+        // layer.bindPopup(popupContent).addTo(this.LMap);
       }
   
-      L.geoJSON(this.geoJsonData, {
+      geoJsonLayer = L.geoJSON(this.geoJsonData, {
         style: (feature) => feature.properties?.style,
         filter: (feature, layer) => {
           if (feature.properties) {
@@ -353,12 +324,44 @@ export class LMap {
           }
            return pointPresentation; 
         }
-      }).addTo(this.LMap);
+      });
    
     }
     //GEOJSON --END
 
 
+    this.LMap = L.map(LMapElement, {
+      // drawControl:true,
+      tap: false,
+      zoomControl: true,
+      minZoom: Number(this.minZoom) || 0,
+      maxZoom: Number(this.maxZoom) || 16,
+      maxBounds: [[-90, -180],[90, 180]],
+      layers: [this.layerGroupTiles, this.layerGroupLocations, esriFeatureLayerStates, heatMapLayer, geoJsonLayer],
+    })
+    .setView(this.center? JSON.parse(this.center) : [0,0], this.zoom ? Number(this.zoom) : 2)
+    .on('click', (e:any) => {
+        console.log('l-map component send location message', e);
+        this.message.emit({
+          type: 'Map.CLICK',
+          data: {
+            coordinates: {...e.latlng}
+          }
+        });
+      })
+    .on('moveend',(e:any) => {
+      console.log('l-map component center change', e);
+      handleMapIteraction('Map.PANNED');
+    })
+    .on('zoom',(e:any) => {
+      console.log('l-map component zoom change', e);
+      handleMapIteraction('Map.ZOOMED');
+    });
+
+    //POLYGON DRAW --START
+    this.initDrawLayer();
+    this.initDrawers();
+    //POLYGON DRAW --END
 
     const baseMaps = {
       'Custom Tile Layer': tileLayer,
@@ -375,6 +378,13 @@ export class LMap {
       'Custom Locations': this.layerGroupLocations,
       'Esri States': esriFeatureLayerStates
     };
+
+    if(geoJsonLayer){
+      overlayMaps['GeoJson'] = geoJsonLayer;
+    }
+    if(heatMapLayer){
+      overlayMaps['Heat Map'] = heatMapLayer;
+    }
 
     L.control.layers(baseMaps, overlayMaps, {
       position: 'bottomright'

@@ -50,7 +50,9 @@
   window.addEventListener('DOMContentLoaded', (event) => {
     var map_wc = document.getElementById('leafletMap');
 
-    map_wc.locations=[[51.505, -0.04],[51.615, -0.04]];
+    setTimeout(()=>{
+        map_wc.locations=[[51.505, -0.04],[51.615, -0.04]];
+    },2000);
     map_wc.addEventListener('message',(ev) => {
       console.log('EVENT FROM LEAFLET-WEBCOMPONENT',ev.detail);
     });

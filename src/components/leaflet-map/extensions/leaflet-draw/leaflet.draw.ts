@@ -5,7 +5,7 @@
  https://github.com/Leaflet/Leaflet.draw
  http://leafletjs.com
  */
-export function extend (L){
+export function extendDrawLayer (L){
 	(function (L,window, document) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
