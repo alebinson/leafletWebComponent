@@ -59,9 +59,9 @@ export function extendBubbleLayer(L) {
 
         },
 
-        createLayer: function (geojson) {
+        createLayer: function () {
 
-            var max = this._getMax(this._geojson);
+            var max = this._getMax();
 
             // Caluclate the minimum and maximum radius from the max area
             // TODO: how to handle zero and negative values
@@ -144,6 +144,7 @@ export function extendBubbleLayer(L) {
             fill_scale = chroma.scale(this.options.scale);
           }
 
+          // @ts-ignore: Unused parameter to preserve API
           legend.onAdd = function(map) {
             var div = L.DomUtil.create('div', 'info legend');
             div.innerHTML += '<strong>' + property + '</strong><br/>';
@@ -194,7 +195,7 @@ export function extendBubbleLayer(L) {
 
         },
 
-        _getMax: function (geoJson) {
+        _getMax: function () {
             var max = 0;
             var features = this._geojson.features;
             var property = this.options.property;

@@ -95,6 +95,7 @@ export class LMap {
     }
 
     this.ro = new ResizeObserver(entries => {
+      // @ts-ignore: Unused local variable to preserve mechanism
       for (const entry of entries) {
         rtime = (new Date()).getTime();
         if (timeout === false) {
@@ -139,8 +140,7 @@ export class LMap {
 
     // Assumming you have a Leaflet map accessible
     this.LMap.on('draw:created', (e) => {
-      let type = e.layerType,
-          layer = e.layer;
+      const layer = e.layer;
 
       // Do whatever you want with the layer.
       // e.type will be the type of layer that has been draw (polyline, marker, polygon, rectangle, circle)
@@ -280,13 +280,14 @@ export class LMap {
     //GEOJSON --START
     let geoJsonLayer = null;
     if(this.geoJsonData){
+      // @ts-ignore: Unused parameter to preserve API
       const onEachFeature = (feature, layer) => {
-        var popupContent = "<p>I started out as a GeoJSON " +
-            feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
+        // let popupContent = "<p>I started out as a GeoJSON " +
+        //     feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
     
-        if (feature.properties?.popupContent) {
-          popupContent += feature.properties.popupContent;
-        }
+        // if (feature.properties?.popupContent) {
+        //   popupContent += feature.properties.popupContent;
+        // }
     
         //In order to bind popup should have a map instance. If requred should be done after init map 
         // layer.bindPopup(popupContent).addTo(this.LMap);
@@ -294,6 +295,7 @@ export class LMap {
   
       geoJsonLayer = L.geoJSON(this.geoJsonData, {
         style: (feature) => feature.properties?.style,
+        // @ts-ignore: Unused parameter to preserve API
         filter: (feature, layer) => {
           if (feature.properties) {
             // If the property "underConstruction" exists and is true, return false (don't render features under construction)

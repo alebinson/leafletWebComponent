@@ -24,7 +24,7 @@
 
 
 export function extendHeatLayer(L) {
-    (function (L, window, document) {
+    (function (L, document) {
 
         function simpleheat(canvas): void {
             if (!(this instanceof simpleheat)) return new simpleheat(canvas);
@@ -377,5 +377,5 @@ export function extendHeatLayer(L) {
             return new L.HeatLayer(latlngs, options);
         };
 
-    }(L, window, document));
+    }(L, document));
 };
