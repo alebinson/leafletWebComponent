@@ -12,6 +12,7 @@ import ResizeObserver from "resize-observer-polyfill";
 
 import { extendDrawLayer } from './extensions/leaflet-draw/leaflet.draw';
 import { extendHeatLayer } from './extensions/leaflet-heatmap-layer/leaflet-heatmap-layer';
+import { extendBubbleLayer } from  './extensions/leaflet-bubble-layer/leaflet-bubble-layer';
 import esri from '../../../node_modules/esri-leaflet/dist/esri-leaflet';
 
 
@@ -22,6 +23,7 @@ enum RafaelGeoPoint {
 
 extendDrawLayer(L);
 extendHeatLayer(L);
+extendBubbleLayer(L);
 L.esri = esri;
 
 @Component({
@@ -57,6 +59,7 @@ export class LMap {
 
   @Prop() heatMapData: Array<[number, number]> = null;
   @Prop() geoJsonData: Array<any> = null; //Array<GeoJSON.FeatureCollection> = null;
+  @Prop() bubbleLayerData: {data:Array<any>, options: any} = null; //Array<GeoJSON.FeatureCollection> = null;
   
 
   LMap;
@@ -329,6 +332,14 @@ export class LMap {
     }
     //GEOJSON --END
 
+    //BUBBLE --START
+    let bubbleLayer = null;
+    if(this.bubbleLayerData){
+      bubbleLayer = L.bubbleLayer(this.bubbleLayerData.data, this.bubbleLayerData.options);
+    }
+    //BUBBLE --END
+
+
 
     this.LMap = L.map(LMapElement, {
       // drawControl:true,
@@ -337,7 +348,7 @@ export class LMap {
       minZoom: Number(this.minZoom) || 0,
       maxZoom: Number(this.maxZoom) || 16,
       maxBounds: [[-90, -180],[90, 180]],
-      layers: [this.layerGroupTiles, this.layerGroupLocations, esriFeatureLayerStates, heatMapLayer, geoJsonLayer],
+      layers: [this.layerGroupTiles, this.layerGroupLocations, esriFeatureLayerStates, heatMapLayer, geoJsonLayer, bubbleLayer],
     })
     .setView(this.center? JSON.parse(this.center) : [0,0], this.zoom ? Number(this.zoom) : 2)
     .on('click', (e:any) => {
@@ -384,6 +395,10 @@ export class LMap {
     }
     if(heatMapLayer){
       overlayMaps['Heat Map'] = heatMapLayer;
+    }
+
+    if(bubbleLayer){
+      overlayMaps['Bubble Layer'] = bubbleLayer;
     }
 
     L.control.layers(baseMaps, overlayMaps, {

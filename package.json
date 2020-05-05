@@ -27,6 +27,8 @@
   "license": "MIT",
   "dependencies": {
     "@types/geojson": "^7946.0.7",
+    "chroma.ts": "^1.0.9",
+    "d3-scale": "^3.2.1",
     "esri-leaflet": "^2.3.3",
     "leaflet": "^1.6.0",
     "leaflet-draw": "^1.0.4",

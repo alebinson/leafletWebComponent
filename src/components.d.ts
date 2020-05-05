@@ -7,6 +7,10 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface LMap {
+        "bubbleLayerData": {
+            data: Array<any>;
+            options: any;
+        };
         "center": string;
         "currentLocation": string;
         "currentLocationIconUrl": string;
@@ -56,6 +60,10 @@ declare global {
 }
 declare namespace LocalJSX {
     interface LMap {
+        "bubbleLayerData"?: {
+            data: Array<any>;
+            options: any;
+        };
         "center"?: string;
         "currentLocation"?: string;
         "currentLocationIconUrl"?: string;
